@@ -12,8 +12,9 @@ const envSchema = z.object({
   GOOGLE_CLIENT_SECRET: z.string().min(1),
   GITHUB_CLIENT_ID: z.string().min(1),
   GITHUB_CLIENT_SECRET: z.string().min(1),
-  AI_PROVIDER: z.enum(['openai', 'anthropic']),
+  AI_PROVIDER: z.enum(['openai', 'anthropic', 'groq']),
   OPENAI_API_KEY: z.string().optional(),
+  GROQ_API_KEY: z.string().optional(),
   ANTHROPIC_API_KEY: z.string().optional(),
   // GOOGLE_CLOUD_API_KEY: z.string().min(1),
   CLIENT_URL: z.string().url(),
@@ -22,6 +23,12 @@ const envSchema = z.object({
     ctx.addIssue({
       code: 'custom',
       message: 'OPENAI_API_KEY is required when AI_PROVIDER is openai',
+    });
+  }
+  if (data.AI_PROVIDER === 'groq' && !data.GROQ_API_KEY) {
+    ctx.addIssue({
+      code: 'custom',
+      message: 'GROQ_API_KEY is required when AI_PROVIDER is groq',
     });
   }
   if (data.AI_PROVIDER === 'anthropic' && !data.ANTHROPIC_API_KEY) {

@@ -2,6 +2,7 @@ import { env } from '../../config/env';
 import { AIProvider } from './types';
 import { OpenAIProvider } from './openai.provider';
 import { AnthropicProvider } from './anthropic.provider';
+import { GroqProvider } from './groq.provider';
 
 let cachedProvider: AIProvider | null = null;
 
@@ -15,6 +16,9 @@ export function getAIProvider(): AIProvider {
     case 'openai':
     default:
       cachedProvider = new OpenAIProvider();
+      break;
+    case 'groq':
+      cachedProvider = new GroqProvider();
       break;
   }
 
