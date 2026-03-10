@@ -3,7 +3,7 @@ import { env } from './env';
 
 export async function connectDB(): Promise<void> {
   try {
-    await mongoose.connect(env.mongodbUri);
+    await mongoose.connect(env.MONGODB_URI);
     console.log('MongoDB connected');
   } catch (error) {
     console.error('MongoDB connection error:', error);

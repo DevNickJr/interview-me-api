@@ -8,7 +8,7 @@ let cachedProvider: AIProvider | null = null;
 export function getAIProvider(): AIProvider {
   if (cachedProvider) return cachedProvider;
 
-  switch (env.aiProvider) {
+  switch (env.AI_PROVIDER) {
     case 'anthropic':
       cachedProvider = new AnthropicProvider();
       break;

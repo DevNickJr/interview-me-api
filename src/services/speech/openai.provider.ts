@@ -6,7 +6,7 @@ export class OpenAISpeechProvider implements SpeechProvider {
   private client: OpenAI;
 
   constructor() {
-    this.client = new OpenAI({ apiKey: env.openaiApiKey });
+    this.client = new OpenAI({ apiKey: env.OPENAI_API_KEY });
   }
 
   async textToSpeech(request: TTSRequest): Promise<Buffer> {

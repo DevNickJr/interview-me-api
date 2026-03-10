@@ -6,7 +6,7 @@ export class OpenAIProvider implements AIProvider {
   private client: OpenAI;
 
   constructor() {
-    this.client = new OpenAI({ apiKey: env.openaiApiKey });
+    this.client = new OpenAI({ apiKey: env.OPENAI_API_KEY });
   }
 
   async generateQuestions(context: QuestionGenerationContext): Promise<string[]> {

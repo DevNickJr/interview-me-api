@@ -6,7 +6,7 @@ export class AnthropicProvider implements AIProvider {
   private client: Anthropic;
 
   constructor() {
-    this.client = new Anthropic({ apiKey: env.anthropicApiKey });
+    this.client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
   }
 
   async generateQuestions(context: QuestionGenerationContext): Promise<string[]> {

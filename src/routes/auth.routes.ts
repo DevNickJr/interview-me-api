@@ -63,7 +63,7 @@ router.get(
   (req: Request, res: Response) => {
     const user = req.user as unknown as IUser;
     const token = signToken(user._id.toString());
-    res.redirect(`${env.clientUrl}/auth/callback?token=${token}`);
+    res.redirect(`${env.CLIENT_URL}/auth/callback?token=${token}`);
   }
 );
 
@@ -79,7 +79,7 @@ router.get(
   (req: Request, res: Response) => {
     const user = req.user as unknown as IUser;
     const token = signToken(user._id.toString());
-    res.redirect(`${env.clientUrl}/auth/callback?token=${token}`);
+    res.redirect(`${env.CLIENT_URL}/auth/callback?token=${token}`);
   }
 );
 

@@ -29,12 +29,12 @@ export function configurePassport() {
   );
 
   // Google strategy
-  if (env.google.clientId && env.google.clientSecret) {
+  if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
     passport.use(
       new GoogleStrategy(
         {
-          clientID: env.google.clientId,
-          clientSecret: env.google.clientSecret,
+          clientID: env.GOOGLE_CLIENT_ID,
+          clientSecret: env.GOOGLE_CLIENT_SECRET,
           callbackURL: '/api/auth/google/callback',
         },
         async (_accessToken, _refreshToken, profile, done) => {
@@ -59,12 +59,12 @@ export function configurePassport() {
   }
 
   // GitHub strategy
-  if (env.github.clientId && env.github.clientSecret) {
+  if (env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET) {
     passport.use(
       new GitHubStrategy(
         {
-          clientID: env.github.clientId,
-          clientSecret: env.github.clientSecret,
+          clientID: env.GITHUB_CLIENT_ID,
+          clientSecret: env.GITHUB_CLIENT_SECRET,
           callbackURL: '/api/auth/github/callback',
         },
         async (_accessToken: string, _refreshToken: string, profile: any, done: any) => {

@@ -1,23 +1,51 @@
+import { z } from 'zod';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const env = {
-  port: parseInt(process.env.PORT || '5000', 10),
-  mongodbUri: process.env.MONGODB_URI || 'mongodb://localhost:27017/interviewme',
-  jwtSecret: process.env.JWT_SECRET || 'change-me',
-  jwtExpiresIn: process.env.JWT_EXPIRES_IN || '1h',
-  google: {
-    clientId: process.env.GOOGLE_CLIENT_ID || '',
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
-  },
-  github: {
-    clientId: process.env.GITHUB_CLIENT_ID || '',
-    clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
-  },
-  aiProvider: (process.env.AI_PROVIDER || 'openai') as 'openai' | 'anthropic',
-  openaiApiKey: process.env.OPENAI_API_KEY || '',
-  anthropicApiKey: process.env.ANTHROPIC_API_KEY || '',
-  googleCloudApiKey: process.env.GOOGLE_CLOUD_API_KEY || '',
-  clientUrl: process.env.CLIENT_URL || 'http://localhost:3000',
-};
+const envSchema = z.object({
+  PORT: z.coerce.number().default(3200),
+  MONGODB_URI: z.string().url(),
+  JWT_SECRET: z.string().min(1),
+  JWT_EXPIRES_IN: z.coerce.number().min(3600),
+  GOOGLE_CLIENT_ID: z.string().min(1),
+  GOOGLE_CLIENT_SECRET: z.string().min(1),
+  GITHUB_CLIENT_ID: z.string().min(1),
+  GITHUB_CLIENT_SECRET: z.string().min(1),
+  AI_PROVIDER: z.enum(['openai', 'anthropic']),
+  OPENAI_API_KEY: z.string().optional(),
+  ANTHROPIC_API_KEY: z.string().optional(),
+  // GOOGLE_CLOUD_API_KEY: z.string().min(1),
+  CLIENT_URL: z.string().url(),
+}).superRefine((data, ctx) => {
+  if (data.AI_PROVIDER === 'openai' && !data.OPENAI_API_KEY) {
+    ctx.addIssue({
+      code: 'custom',
+      message: 'OPENAI_API_KEY is required when AI_PROVIDER is openai',
+    });
+  }
+  if (data.AI_PROVIDER === 'anthropic' && !data.ANTHROPIC_API_KEY) {
+    ctx.addIssue({
+      code: 'custom',
+      message: 'ANTHROPIC_API_KEY is required when AI_PROVIDER is anthropic',
+    });
+  }
+});
+
+const parsed = envSchema.safeParse(process.env);
+
+if (!parsed.success) {
+  console.error(
+    '❌ Invalid environment variables:',
+    parsed.error.flatten().fieldErrors,
+    parsed
+  );
+  process.exit(1);
+}
+export const env = parsed.data;
+
+// Export the parsed environment variables for use in your applicatio
+export default env;
+
+
+
