@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { env } from '../../config/env';
+import { env } from '@/configs/env.config';
 import { AIProvider, QuestionGenerationContext, ResponseEvaluation, ReportData, EvaluationInput } from './types';
 
 export class OpenAIProvider implements AIProvider {

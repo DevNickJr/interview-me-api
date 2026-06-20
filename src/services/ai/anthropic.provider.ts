@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { env } from '../../config/env';
+import { env } from '@/configs/env.config';
 import { AIProvider, QuestionGenerationContext, ResponseEvaluation, ReportData, EvaluationInput } from './types';
 
 export class AnthropicProvider implements AIProvider {

@@ -1,5 +1,5 @@
 import OpenAI, { toFile } from 'openai';
-import { env } from '../../config/env';
+import { env } from '@/configs/env.config';
 import { SpeechProvider, TTSRequest, STTRequest } from './types';
 
 export class OpenAISpeechProvider implements SpeechProvider {

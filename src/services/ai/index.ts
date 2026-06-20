@@ -1,4 +1,4 @@
-import { env } from '../../config/env';
+import { env } from '@/configs/env.config';
 import { AIProvider } from './types';
 import { OpenAIProvider } from './openai.provider';
 import { AnthropicProvider } from './anthropic.provider';
