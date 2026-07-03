@@ -84,17 +84,22 @@ export const evaluateHandler = async (req: Request, res: Response, next: NextFun
     const questionId = req.params.id as string;
     const question = await Question.findById(questionId);
     if (!question) throw CustomError.notFound('Question not found');
-    if (!question.response?.transcript) throw CustomError.badRequest('No response to evaluate');
-
-    const evaluation = await useChatCompletionModels({
-      type: "evaluate-response",
-      data: {
-        question: question.text,
-        response: question.response.transcript
-      }
-    }) as ResponseEvaluation;
-    // const evaluation = await ai.evaluateResponse(question.text, question.response.transcript);
-
+    // if (!question.response?.transcript) throw CustomError.badRequest('No response to evaluate');
+    let evaluation: ResponseEvaluation = {
+      score: 0,
+      feedback: 'No response to evaluate',
+      strengths: [],
+      improvements: [],
+    }
+    if (question.response?.transcript) {
+      evaluation = await useChatCompletionModels({
+        type: "evaluate-response",
+        data: {
+          question: question.text,
+          response: question.response.transcript
+        }
+      }) as ResponseEvaluation;
+    };
     question.evaluation = evaluation;
     await question.save();
 
