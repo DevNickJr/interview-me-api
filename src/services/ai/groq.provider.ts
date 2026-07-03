@@ -2,18 +2,19 @@ import Groq from 'groq-sdk';
 import { env } from '@/configs/env.config';
 import { AIProvider, QuestionGenerationContext, ResponseEvaluation, ReportData, EvaluationInput } from './types';
 
-const GROQ_MODEL = 'openai/gpt-oss-20b';
 export class GroqProvider implements AIProvider {
   private client: Groq;
+  private modelName: string;
 
-  constructor() {
+  constructor(modelName: string) {
     this.client = new Groq({ apiKey: env.GROQ_API_KEY });
+    this.modelName = modelName;
   } 
 
   async generateQuestions(context: QuestionGenerationContext): Promise<string[]> {
     const prompt = this.buildQuestionPrompt(context);
     const response = await this.client.chat.completions.create({
-      model: GROQ_MODEL,
+      model: this.modelName,
       messages: [
         { role: 'system', content: 'You are an expert interviewer and public speaking coach. Generate realistic, thoughtful questions. Return ONLY a JSON array of strings, no other text.' },
         { role: 'user', content: prompt },
@@ -25,7 +26,7 @@ export class GroqProvider implements AIProvider {
     return JSON.parse(content);
   }
 
-  async evaluateResponse(question: string, response: string): Promise<ResponseEvaluation> {
+  async evaluateResponse(data: { question: string, response: string }): Promise<ResponseEvaluation> {
     const result = await this.client.chat.completions.create({
       model: 'openai/gpt-oss-20b',
       messages: [
@@ -40,7 +41,7 @@ Return ONLY a JSON object with this exact shape:
   "improvements": ["<improvement1>", "<improvement2>"]
 }`,
         },
-        { role: 'user', content: `Question: "${question}"\n\nCandidate's Response: "${response}"` },
+        { role: 'user', content: `Question: "${data.question}"\n\nCandidate's Response: "${data.response}"` },
       ],
       temperature: 0.5,
     });
@@ -55,7 +56,7 @@ Return ONLY a JSON object with this exact shape:
       .join('\n');
 
     const result = await this.client.chat.completions.create({
-      model: GROQ_MODEL,
+      model: this.modelName,
       messages: [
         {
           role: 'system',

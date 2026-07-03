@@ -30,6 +30,6 @@ export interface EvaluationInput {
 
 export interface AIProvider {
   generateQuestions(context: QuestionGenerationContext): Promise<string[]>;
-  evaluateResponse(question: string, response: string): Promise<ResponseEvaluation>;
+  evaluateResponse(data: { question: string; response: string }): Promise<ResponseEvaluation>;
   generateReport(evaluations: EvaluationInput[]): Promise<ReportData>;
 }

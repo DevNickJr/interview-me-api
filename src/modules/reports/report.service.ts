@@ -1,7 +1,7 @@
 import Report, { IReport } from '@/modules/reports/report.model';
 import Question from '@/modules/questions/question.model';
 import Session from '@/modules/sessions/session.model';
-import { getAIProvider, EvaluationInput } from '@/services/ai';
+import { EvaluationInput, ReportData, useChatCompletionModels } from '@/services/ai';
 import CustomError from '@/utils/CustomError';
 
 export async function generateReport(sessionId: string, userId: string): Promise<IReport> {
@@ -25,8 +25,11 @@ export async function generateReport(sessionId: string, userId: string): Promise
     throw CustomError.badRequest('No evaluated responses to generate a report from');
   }
 
-  const ai = getAIProvider();
-  const reportData = await ai.generateReport(evaluations);
+   const reportData = await useChatCompletionModels({
+    type: 'generate-report',
+    data: evaluations
+  }) as ReportData;
+  // const reportData = await ai.generateReport(evaluations);
 
   const report = await Report.create({
     session: sessionId,

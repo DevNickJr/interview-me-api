@@ -15,6 +15,7 @@ const envSchema = z.object({
   AI_PROVIDER: z.enum(['openai', 'anthropic', 'groq']),
   OPENAI_API_KEY: z.string().optional(),
   GROQ_API_KEY: z.string().optional(),
+  GEMINI_API_KEY: z.string().optional(),
   ANTHROPIC_API_KEY: z.string().optional(),
   CLIENT_URL: z.string().url(),
 }).superRefine((data, ctx) => {

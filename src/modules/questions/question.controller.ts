@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import * as questionService from '@/modules/questions/question.service';
 import Session from '@/modules/sessions/session.model';
 import Question from '@/modules/questions/question.model';
-import { getAIProvider } from '@/services/ai';
+import { ResponseEvaluation, useChatCompletionModels } from '@/services/ai';
 import CustomError from '@/utils/CustomError';
 
 export const addQuestionHandler = async (req: Request, res: Response, next: NextFunction) => {
@@ -20,15 +20,21 @@ export const generateQuestionsHandler = async (req: Request, res: Response, next
     const session = await Session.findOne({ _id: sessionId, user: req.user!.id });
     if (!session) throw CustomError.notFound('Session not found');
 
-    const ai = getAIProvider();
-    const generatedTexts = await ai.generateQuestions({
-      type: session.type,
-      role: session.details.role,
-      company: session.details.company,
-      description: session.details.description,
-      difficulty: session.details.difficulty,
-      count: req.body.count,
-    });
+    const generatedTexts = await useChatCompletionModels({
+      type: 'generate-question',
+      data: {
+        type: session.type,
+        role: session.details.role,
+        company: session.details.company,
+        description: session.details.description,
+        difficulty: session.details.difficulty,
+        count: req.body.count,
+      }
+    }) as string[];
+    
+    // const generatedTexts = await ai.generateQuestions({
+  
+    // });
 
     const questions = await questionService.addBulkQuestions(sessionId, req.user!.id, generatedTexts);
     res.status(201).json({ message: 'Questions generated successfully', data: questions });
@@ -80,8 +86,14 @@ export const evaluateHandler = async (req: Request, res: Response, next: NextFun
     if (!question) throw CustomError.notFound('Question not found');
     if (!question.response?.transcript) throw CustomError.badRequest('No response to evaluate');
 
-    const ai = getAIProvider();
-    const evaluation = await ai.evaluateResponse(question.text, question.response.transcript);
+    const evaluation = await useChatCompletionModels({
+      type: "evaluate-response",
+      data: {
+        question: question.text,
+        response: question.response.transcript
+      }
+    }) as ResponseEvaluation;
+    // const evaluation = await ai.evaluateResponse(question.text, question.response.transcript);
 
     question.evaluation = evaluation;
     await question.save();
