@@ -14,9 +14,9 @@ export const generateQuestionsSchema = z.object({
 
 export const respondSchema = z.object({
   body: z.object({
-    transcript: z.string().min(1),
+    transcript: z.string().default('No response'),
     audioUrl: z.string().optional(),
-    duration: z.number().min(0),
+    duration: z.number().min(0).default(0),
   }),
 });
 
