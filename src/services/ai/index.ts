@@ -1,5 +1,4 @@
 
-import OpenAI from "openai";
 import env from "@/configs/env.config";
 import { getCurrentModel, getCurrentProvider, getTotalAvailableConfigurations, Provider, PROVIDERS, recordFailure, recordSuccess } from "./rotation";
 import { AIProvider, EvaluationInput, QuestionGenerationContext } from "./types";
@@ -49,29 +48,6 @@ function getProviderConfig(name: typeof PROVIDERS[number]) {
         baseURL: "https://api.openai.com/v1",
       };
   }
-}
-
-const systemMessages = {
-  'generate-questions': 'You are an expert interviewer and public speaking coach. Generate realistic, thoughtful questions. Return ONLY a JSON array of strings, no other text.',
-  'generate-report': `You are an expert interview coach. Evaluate the candidate's response to the given question.
-      Return ONLY a JSON object with this exact shape:
-      {
-        "score": <number 1-10>,
-        "feedback": "<overall feedback string>",
-        "strengths": ["<strength1>", "<strength2>"],
-        "improvements": ["<improvement1>", "<improvement2>"]
-      },
-      `,
-  'evaluate-responses': `You are an expert interview coach generating a final performance report.
-      Return ONLY a JSON object with this exact shape:
-      {
-        "overallScore": <number 1-10>,
-        "summary": "<2-3 sentence summary>",
-        "strengths": ["<strength1>", ...],
-        "improvements": ["<improvement1>", ...],
-        "tips": ["<actionable tip1>", ...]
-      }`,
-
 }
 
 export async function useChatCompletionModels({

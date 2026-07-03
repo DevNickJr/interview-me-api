@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
-import { SessionType, Difficulty, QuestionOrder, SessionStatus, SessionDetails } from '@/types';
+import { SessionType, QuestionOrder, SessionStatus, SessionDetails } from '@/types';
 
 export interface ISession extends Document {
   _id: Types.ObjectId;
