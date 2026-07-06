@@ -1,3 +1,5 @@
+import { ISessionArchetype } from ".";
+
 export interface QuestionGenerationContext {
   type: 'interview' | 'presentation' | 'speech';
   role?: string;
@@ -5,6 +7,7 @@ export interface QuestionGenerationContext {
   description?: string;
   difficulty?: string;
   count: number;
+  archetype?: ISessionArchetype;
 }
 
 export interface ResponseEvaluation {

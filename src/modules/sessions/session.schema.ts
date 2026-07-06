@@ -1,9 +1,11 @@
+import { SESSIONARCHETYPES } from '@/services/ai';
 import { z } from 'zod';
 
 export const createSessionSchema = z.object({
   body: z.object({
     title: z.string().min(1),
     type: z.enum(['interview', 'presentation', 'speech']),
+    archetype: z.enum(SESSIONARCHETYPES).optional(),
     details: z
       .object({
         role: z.string().optional(),
@@ -20,6 +22,7 @@ export const updateSessionSchema = z.object({
   body: z.object({
     title: z.string().min(1).optional(),
     type: z.enum(['interview', 'presentation', 'speech']).optional(),
+    archetype: z.enum(SESSIONARCHETYPES).optional(),
     details: z
       .object({
         role: z.string().optional(),

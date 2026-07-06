@@ -14,8 +14,6 @@ router.get('/', Controller.getSessionsHandler);
 router.get('/:id', Controller.getSessionHandler);
 router.patch('/:id', validateRequest([Schema.updateSessionSchema]), Controller.updateSessionHandler);
 router.delete('/:id', Controller.deleteSessionHandler);
-router.post('/:id/start', Controller.startSessionHandler);
-router.post('/:id/complete', Controller.completeSessionHandler);
 
 // Mount question routes under sessions
 router.use('/:sessionId/questions', questionRoutes);

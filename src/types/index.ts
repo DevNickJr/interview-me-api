@@ -4,8 +4,9 @@ export type SessionType = 'interview' | 'presentation' | 'speech';
 export type Difficulty = 'easy' | 'medium' | 'hard';
 export type QuestionSource = 'manual' | 'ai_generated';
 export type QuestionOrder = 'sequential' | 'random';
-export type SessionStatus = 'draft' | 'in_progress' | 'completed';
+export type PracticeStatus = 'in_progress' | 'completed';
 export type AuthProvider = 'local' | 'google' | 'github';
+export type SubscriptionStatus = 'active' | 'cancelled' | 'expired';
 
 export interface SessionDetails {
   role?: string;
@@ -14,17 +15,19 @@ export interface SessionDetails {
   difficulty?: Difficulty;
 }
 
-export interface QuestionResponse {
-  transcript: string;
-  audioUrl?: string;
-  duration: number;
-}
-
 export interface QuestionEvaluation {
   score: number;
   feedback: string;
   strengths: string[];
   improvements: string[];
+}
+
+export interface PracticeResponseEntry {
+  question: Types.ObjectId;
+  transcript: string;
+  audioUrl?: string;
+  duration: number;
+  evaluation?: QuestionEvaluation;
 }
 
 export interface QuestionScoreEntry {

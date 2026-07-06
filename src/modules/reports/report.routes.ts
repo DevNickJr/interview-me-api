@@ -4,10 +4,14 @@ import * as Controller from '@/modules/reports/report.controller';
 
 const router = Router();
 
+// Public route - shared report (no auth required)
+router.get('/share/:shareToken', Controller.getSharedReportHandler);
+
+// Protected routes
 router.use(isAuthenticated);
 
-router.get('/session/:sessionId', Controller.getReportHandler);
-router.post('/session/:sessionId/generate', Controller.generateReportHandler);
+router.get('/practice/:practiceId', Controller.getReportHandler);
+router.post('/practice/:practiceId/generate', Controller.generateReportHandler);
 router.get('/', Controller.listReportsHandler);
 
 export default router;

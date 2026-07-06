@@ -16,9 +16,15 @@ export function configurePassport() {
             return done(null, false, { message: 'Invalid email or password' });
           }
           const isMatch = await user.comparePassword(password);
+          console.log({
+            isMatch
+          })
           if (!isMatch) {
             return done(null, false, { message: 'Invalid email or password' });
           }
+          console.log({
+            user
+          })
           return done(null, user);
         } catch (error) {
           return done(error);

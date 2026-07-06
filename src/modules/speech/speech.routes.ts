@@ -6,6 +6,10 @@ import * as Controller from '@/modules/speech/speech.controller';
 
 const router = Router();
 
+// Public route
+router.get('/voices', Controller.getVoicesHandler);
+
+// Protected routes
 router.use(isAuthenticated);
 
 router.post('/tts', validateRequest([Schema.ttsSchema]), Controller.ttsHandler);

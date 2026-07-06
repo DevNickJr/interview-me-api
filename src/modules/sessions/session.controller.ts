@@ -45,21 +45,3 @@ export const deleteSessionHandler = async (req: Request, res: Response, next: Ne
     next(error);
   }
 };
-
-export const startSessionHandler = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const session = await sessionService.startSession(req.params.id as string, req.user!.id);
-    res.json({ message: 'Session started successfully', data: session });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const completeSessionHandler = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const session = await sessionService.completeSession(req.params.id as string, req.user!.id);
-    res.json({ message: 'Session completed successfully', data: session });
-  } catch (error) {
-    next(error);
-  }
-};

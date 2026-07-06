@@ -1,6 +1,7 @@
 import app from '@/app';
 import { connectDB } from '@/configs/database.config';
 import { env } from '@/configs/env.config';
+import { seedArchetypes } from '@/modules/archetypes/archetype.service';
 import mongoose from 'mongoose';
 
 const server = init();
@@ -8,6 +9,7 @@ const server = init();
 async function init() {
   try {
     await connectDB();
+    await seedArchetypes();
 
     const PORT = Number(process.env.PORT || env.PORT || 5000);
 

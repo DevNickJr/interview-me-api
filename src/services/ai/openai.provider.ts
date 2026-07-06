@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import { env } from '@/configs/env.config';
 import { AIProvider, QuestionGenerationContext, ResponseEvaluation, ReportData, EvaluationInput } from './types';
+import { generateSystemInstruction } from '.';
 
 export class OpenAIProvider implements AIProvider {
   private client: OpenAI;
@@ -16,7 +17,7 @@ export class OpenAIProvider implements AIProvider {
     const response = await this.client.chat.completions.create({
       model: this.modelName,
       messages: [
-        { role: 'system', content: 'You are an expert interviewer and public speaking coach. Generate realistic, thoughtful questions. Return ONLY a JSON array of strings, no other text.' },
+        { role: 'system', content: generateSystemInstruction(context.archetype), },
         { role: 'user', content: prompt },
       ],
       temperature: 0.8,

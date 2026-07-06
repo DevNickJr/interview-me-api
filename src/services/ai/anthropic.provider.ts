@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { env } from '@/configs/env.config';
 import { AIProvider, QuestionGenerationContext, ResponseEvaluation, ReportData, EvaluationInput } from './types';
+import { generateSystemInstruction } from '.';
 
 export class AnthropicProvider implements AIProvider {
   private client: Anthropic;
@@ -16,7 +17,7 @@ export class AnthropicProvider implements AIProvider {
     const response = await this.client.messages.create({
       model: this.modelName,
       max_tokens: 2048,
-      system: 'You are an expert interviewer and public speaking coach. Generate realistic, thoughtful questions. Return ONLY a JSON array of strings, no other text.',
+      system: generateSystemInstruction(context.archetype),
       messages: [{ role: 'user', content: prompt }],
     });
 

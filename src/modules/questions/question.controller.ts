@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import * as questionService from '@/modules/questions/question.service';
 import Session from '@/modules/sessions/session.model';
-import Question from '@/modules/questions/question.model';
-import { ResponseEvaluation, useChatCompletionModels } from '@/services/ai';
+import { useChatCompletionModels } from '@/services/ai';
 import CustomError from '@/utils/CustomError';
 
 export const addQuestionHandler = async (req: Request, res: Response, next: NextFunction) => {
@@ -24,6 +23,7 @@ export const generateQuestionsHandler = async (req: Request, res: Response, next
       type: 'generate-question',
       data: {
         type: session.type,
+        archetype: session.archetype,
         role: session.details.role,
         company: session.details.company,
         description: session.details.description,
@@ -31,10 +31,6 @@ export const generateQuestionsHandler = async (req: Request, res: Response, next
         count: req.body.count,
       }
     }) as string[];
-    
-    // const generatedTexts = await ai.generateQuestions({
-  
-    // });
 
     const questions = await questionService.addBulkQuestions(sessionId, req.user!.id, generatedTexts);
     res.status(201).json({ message: 'Questions generated successfully', data: questions });
@@ -65,45 +61,6 @@ export const deleteQuestionHandler = async (req: Request, res: Response, next: N
   try {
     await questionService.deleteQuestion(req.params.id as string, req.user!.id);
     res.status(204).send();
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const respondHandler = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const question = await questionService.submitResponse(req.params.id as string, req.user!.id, req.body);
-    res.json({ message: 'Response submitted successfully', data: question });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const evaluateHandler = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const questionId = req.params.id as string;
-    const question = await Question.findById(questionId);
-    if (!question) throw CustomError.notFound('Question not found');
-    // if (!question.response?.transcript) throw CustomError.badRequest('No response to evaluate');
-    let evaluation: ResponseEvaluation = {
-      score: 0,
-      feedback: 'No response to evaluate',
-      strengths: [],
-      improvements: [],
-    }
-    if (question.response?.transcript) {
-      evaluation = await useChatCompletionModels({
-        type: "evaluate-response",
-        data: {
-          question: question.text,
-          response: question.response.transcript
-        }
-      }) as ResponseEvaluation;
-    };
-    question.evaluation = evaluation;
-    await question.save();
-
-    res.json({ message: 'Response evaluated successfully', data: question });
   } catch (error) {
     next(error);
   }

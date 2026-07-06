@@ -10,7 +10,5 @@ router.post('/generate', validateRequest([Schema.generateQuestionsSchema]), Cont
 router.get('/', Controller.getQuestionsHandler);
 router.patch('/:id', validateRequest([Schema.addQuestionSchema]), Controller.updateQuestionHandler);
 router.delete('/:id', Controller.deleteQuestionHandler);
-router.post('/:id/respond', validateRequest([Schema.respondSchema]), Controller.respondHandler);
-router.post('/:id/evaluate', Controller.evaluateHandler);
 
 export default router;

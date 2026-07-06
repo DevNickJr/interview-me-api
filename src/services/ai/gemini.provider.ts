@@ -1,6 +1,7 @@
 import {GoogleGenAI} from '@google/genai';
 import { env } from '@/configs/env.config';
 import { AIProvider, QuestionGenerationContext, ResponseEvaluation, ReportData, EvaluationInput } from './types';
+import { generateSystemInstruction } from '.';
 
 export class GeminiProvider implements AIProvider {
   private client: GoogleGenAI;
@@ -18,7 +19,7 @@ export class GeminiProvider implements AIProvider {
       model: this.modelName,
       contents: prompt,
       config: {
-        systemInstruction: 'You are an expert interviewer and public speaking coach. Generate realistic, thoughtful questions. Return ONLY a JSON array of strings, no other text.',
+        systemInstruction: generateSystemInstruction(context.archetype),
       }
     });
 

@@ -1,17 +1,16 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
-import { SessionType, QuestionOrder, SessionStatus, SessionDetails } from '@/types';
+import { SessionType, QuestionOrder, SessionDetails } from '@/types';
+import { ISessionArchetype, SESSIONARCHETYPES } from '@/services/ai';
 
 export interface ISession extends Document {
   _id: Types.ObjectId;
   user: Types.ObjectId;
   title: string;
   type: SessionType;
+  archetype?: ISessionArchetype;
   details: SessionDetails;
   questions: Types.ObjectId[];
   questionOrder: QuestionOrder;
-  status: SessionStatus;
-  startedAt?: Date;
-  completedAt?: Date;
 }
 
 const sessionSchema = new Schema<ISession>(
@@ -19,6 +18,7 @@ const sessionSchema = new Schema<ISession>(
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
     title: { type: String, required: true, trim: true },
     type: { type: String, enum: ['interview', 'presentation', 'speech'], required: true },
+    archetype: { type: String, enum: SESSIONARCHETYPES },
     details: {
       role: { type: String, trim: true },
       company: { type: String, trim: true },
@@ -27,9 +27,6 @@ const sessionSchema = new Schema<ISession>(
     },
     questions: [{ type: Schema.Types.ObjectId, ref: 'Question' }],
     questionOrder: { type: String, enum: ['sequential', 'random'], default: 'sequential' },
-    status: { type: String, enum: ['draft', 'in_progress', 'completed'], default: 'draft' },
-    startedAt: { type: Date },
-    completedAt: { type: Date },
   },
   { timestamps: true }
 );

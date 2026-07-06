@@ -99,7 +99,6 @@ export async function useChatCompletionModels({
   }
 }
 
-
 export function getAIProvider(provider: Provider, modelName: string): AIProvider {
   let cachedProvider: AIProvider | null = null;
 
@@ -122,5 +121,61 @@ export function getAIProvider(provider: Provider, modelName: string): AIProvider
     }
     return cachedProvider;
 }
+
+export const ARCHETYPES = {
+  // Silicon Valley = Fast-paced, disruptive, casual, risk-tolerant
+  startup_disruptor: {
+    name: "Fast-Paced Startup / Agile Tech Vibe",
+    style: "Casual, direct, energetic, and highly ambitious.",
+    focus: "Speed, innovation, challenging status quos, comfort with ambiguity, and learning from fast failure."
+  },
+  // Microsoft = Structured, matrixed, corporate, scale-focused
+  enterprise_corporate: {
+    name: "Structured Enterprise / Big Corporate",
+    style: "Highly polished, formal, diplomatic, and process-oriented.",
+    focus: "Cross-functional alignment, long-term strategy, navigating company politics, scalability, and structural compliance."
+  },
+  // Nigerian/Emerging Markets = Resilient, gritty, sharp, high-context
+  emerging_market_resilience: {
+    name: "High-Stakes / Emerging Market Vibe",
+    style: "Respectful yet intensely sharp, sharp-witted, and pragmatic.",
+    focus: "Exceptional resourcefulness, grit, operational survival, quick pivoting, and handling real-world infrastructure constraints."
+  },
+  // Bank = High-regulation, conservative, zero-error, legacy
+  conservative_institutional: {
+    name: "Conservative / Highly Regulated Institutional",
+    style: "Ultra-professional, precise, formal, and cautious.",
+    focus: "Risk mitigation, strict adherence to protocols, accountability, security, data integrity, and zero tolerance for careless errors."
+  }
+};
+
+export type ISessionArchetype = keyof typeof ARCHETYPES
+export const SESSIONARCHETYPES = Object.keys(ARCHETYPES) as ISessionArchetype[]
+
+export const generateSystemInstruction = (archetypeKey?: ISessionArchetype) => {
+  // Default fallback
+  const archetype = archetypeKey && ARCHETYPES[archetypeKey]
+
+  const systemInstruction = `
+    You are an expert interviewer and public speaking coach. Generate realistic, thoughtful questions
+
+    ${(archetypeKey && archetype) ? 
+      `For the feel of the questions, adapt your interviewing persona to match a "${archetype.name}" environment.
+    
+      COMMUNICATION STYLE:
+      - Adopt a tone that is ${archetype.style}
+      
+      CORE EVALUATION CRITERIA:
+      - Apply these cultural traits naturally to the candidate's specific job role or topic -  ${archetype.focus}.`
+
+    : '' }
+
+    OUTPUT FORMAT:
+    - Return ONLY a JSON array of strings, no other text
+  `.trim();
+
+  return systemInstruction
+}
+
 
 export type { AIProvider, QuestionGenerationContext, ResponseEvaluation, ReportData, EvaluationInput } from './types';

@@ -29,7 +29,7 @@ export const loginHandler = (
     (err: Error | null, user: IUser | false, info: { message: string }) => {
       if (err) return next(err);
       if (!user) {
-        return res.status(401).json({ message: info?.message || 'Invalid credentials' });
+        return res.status(400).json({ message: info?.message || 'Invalid credentials' });
       }
       const result = loginUser(user);
       res.json({ message: 'Login successful', data: result });

@@ -9,7 +9,6 @@ export async function addQuestion(
 ): Promise<IQuestion> {
   const session = await Session.findOne({ _id: sessionId, user: userId });
   if (!session) throw CustomError.notFound('Session not found');
-  if (session.status !== 'draft') throw CustomError.badRequest('Cannot add questions to a started session');
 
   const count = await Question.countDocuments({ session: sessionId });
 
@@ -33,7 +32,6 @@ export async function addBulkQuestions(
 ): Promise<IQuestion[]> {
   const session = await Session.findOne({ _id: sessionId, user: userId });
   if (!session) throw CustomError.notFound('Session not found');
-  if (session.status !== 'draft') throw CustomError.badRequest('Cannot add questions to a started session');
 
   const currentCount = await Question.countDocuments({ session: sessionId });
 
@@ -86,21 +84,4 @@ export async function deleteQuestion(questionId: string, userId: string): Promis
   session.questions = session.questions.filter((q) => !q.equals(question._id));
   await session.save();
   await question.deleteOne();
-}
-
-export async function submitResponse(
-  questionId: string,
-  userId: string,
-  data: { transcript: string; audioUrl?: string; duration: number }
-): Promise<IQuestion> {
-  const question = await Question.findById(questionId);
-  if (!question) throw CustomError.notFound('Question not found');
-
-  const session = await Session.findOne({ _id: question.session, user: userId });
-  if (!session) throw CustomError.notFound('Session not found');
-  if (session.status !== 'in_progress') throw CustomError.badRequest('Session is not in progress');
-
-  question.response = data;
-  await question.save();
-  return question;
 }

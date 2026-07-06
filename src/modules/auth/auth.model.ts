@@ -10,6 +10,7 @@ export interface IUser extends Document {
   avatar?: string;
   provider: AuthProvider;
   providerId?: string;
+  voicePreference: string;
   comparePassword(candidate: string): Promise<boolean>;
 }
 
@@ -21,6 +22,7 @@ const userSchema = new Schema<IUser>(
     avatar: { type: String },
     provider: { type: String, enum: ['local', 'google', 'github'], default: 'local' },
     providerId: { type: String },
+    voicePreference: { type: String, default: 'alloy' },
   },
   { timestamps: true }
 );
