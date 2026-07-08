@@ -21,6 +21,9 @@ export const corsOptions = {
       callback(null, true);
     } else {
       const normalizedOrigin = origin.toLowerCase().replace(/\/$/, ''); // remove trailing slash
+      console.log({
+        normalizedOrigin
+      })
       const allowed =
         whitelist
           .map(o => o.toLowerCase().replace(/\/$/, ''))
@@ -28,6 +31,10 @@ export const corsOptions = {
         otherHosts
           .map(o => o.toLowerCase().replace(/\/$/, ''))
           .includes(normalizedOrigin)
+
+      console.log({
+        allowed
+      })
 
       if (allowed) {
         callback(null, true);

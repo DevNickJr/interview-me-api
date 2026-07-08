@@ -19,6 +19,22 @@ const limiter = rateLimit({
 const PreRouteMiddleware = (app: Express): void => {
   app.use(cors(corsOptions));
 
+    // Handle preflight requests explicitly
+  app.options(/.*/, (req, res) => {
+    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.header(
+      'Access-Control-Allow-Methods',
+      'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS'
+    );
+    res.header(
+      'Access-Control-Allow-Headers',
+      'Content-Type, Authorization, tempauth, x-client-type, Cache-Control, cache-control, pragma'
+    );
+    res.setHeader('Access-Control-Max-Age', '300');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.sendStatus(200); // Respond to preflight requests
+  });
+
     // extends the requestAnimationFrame.query object with a setter
   app.use((req, _res, next) => {
     Object.defineProperty(req, 'query', {
