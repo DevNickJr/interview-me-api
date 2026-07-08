@@ -20,6 +20,13 @@ export const practiceIdParamSchema = z.object({
   }),
 });
 
+export const practiceQuestionIdParamSchema = z.object({
+  params: z.object({
+    id: z.string().min(1),
+    questionId: z.string().min(1),
+  }),
+});
+
 export const sessionIdParamSchema = z.object({
   params: z.object({
     sessionId: z.string().min(1),

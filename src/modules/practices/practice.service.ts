@@ -96,6 +96,7 @@ export async function submitResponse(
   );
 
   if (existingIndex !== -1) {
+    practice.responses[existingIndex].question = questionId as any;
     practice.responses[existingIndex].transcript = data.transcript;
     practice.responses[existingIndex].duration = data.duration;
     if (data.audioUrl) practice.responses[existingIndex].audioUrl = data.audioUrl;
