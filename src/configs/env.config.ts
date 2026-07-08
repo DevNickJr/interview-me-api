@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const envSchema = z.object({
+  ALLOWED_HOSTS: z.string().optional(),
   PORT: z.coerce.number().default(3200),
   MONGODB_URI: z.string().url(),
   JWT_SECRET: z.string().min(1),

@@ -5,8 +5,8 @@ import morgan from 'morgan';
 import compression from 'compression';
 import passport from 'passport';
 import rateLimit from 'express-rate-limit';
-import { env } from '@/configs/env.config';
 import { configurePassport } from '@/configs/passport.config';
+import { corsOptions } from '@/configs/cors.config';
 
 const limiter = rateLimit({
   windowMs: 5 * 60 * 1000,
@@ -17,14 +17,25 @@ const limiter = rateLimit({
 });
 
 const PreRouteMiddleware = (app: Express): void => {
-  app.use(
-    cors({
-      origin: env.CLIENT_URL,
-      credentials: true,
-      methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
-    })
-  );
+  app.use(cors(corsOptions));
+
+    // extends the requestAnimationFrame.query object with a setter
+  app.use((req, _res, next) => {
+    Object.defineProperty(req, 'query', {
+      ...Object.getOwnPropertyDescriptor(req, 'query'),
+      value: req.query,
+      writable: true,
+    });
+    next();
+  });
+
+  // Middleware to conditionally apply JSON parsing
+  app.use(express.json({
+    verify: (req, _, buf) => {
+      (req as any).rawBody = buf.toString('utf8');
+    },
+  }));
+
   app.use(limiter);
   app.use(morgan('dev'));
   app.use(compression());
